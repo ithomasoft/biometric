@@ -12,12 +12,10 @@ public abstract class BiometricIdentifyCallback {
     public void onSucceeded(BiometricPrompt.AuthenticationResult result) {
     }
 
-    public void onFailed() {
-    }
-
     public void onError(int code, String reason) {
     }
 
     public void onCancel() {
+
     }
 }

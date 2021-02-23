@@ -1,6 +1,6 @@
 package com.ithomasoft.biometric;
 
-public abstract class BiometricStateCallback {
+abstract class BiometricStateCallback {
     public void onSuccess() {
     }
 

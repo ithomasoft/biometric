@@ -8,8 +8,8 @@ import androidx.biometric.BiometricPrompt;
 import android.os.Bundle;
 import android.view.View;
 
-import com.ithomasoft.biometric.BiometricHelper;
 import com.ithomasoft.biometric.BiometricIdentifyCallback;
+import com.ithomasoft.biometric.BiometricManager;
 
 public class LoginActivity extends AppCompatActivity {
     private AppCompatEditText etUsername;
@@ -36,13 +36,33 @@ public class LoginActivity extends AppCompatActivity {
                     UserHelper.setPassword(LoginActivity.this, etPassword.getText().toString());
                     UserHelper.setLoginState(LoginActivity.this, true);
                 } else {
-                    BiometricHelper.startBiometric(LoginActivity.this, "指纹登录", "使用密码登录", new BiometricIdentifyCallback() {
+                    BiometricManager.startBiometricIdentify(LoginActivity.this, new BiometricIdentifyCallback() {
+                        @Override
+                        public void onOther() {
+                            super.onOther();
+                        }
+
+                        @Override
+                        public void onNoBiometric() {
+                            super.onNoBiometric();
+                        }
+
                         @Override
                         public void onSucceeded(BiometricPrompt.AuthenticationResult result) {
                             super.onSucceeded(result);
                             UserHelper.setUserName(LoginActivity.this, etUsername.getText().toString());
                             UserHelper.setPassword(LoginActivity.this, etPassword.getText().toString());
                             UserHelper.setLoginState(LoginActivity.this, true);
+                        }
+
+                        @Override
+                        public void onError(int code, String reason) {
+                            super.onError(code, reason);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            super.onCancel();
                         }
                     });
                 }

@@ -1,25 +1,20 @@
 package com.ithomasoft.biometric.demo;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.biometric.BiometricPrompt;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ithomasoft.biometric.BiometricHelper;
-import com.ithomasoft.biometric.BiometricIdentifyCallback;
-import com.ithomasoft.biometric.BiometricStateCallback;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+
+import com.ithomasoft.biometric.BiometricManager;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvUser;
     private AppCompatButton btnSetting;
     private AppCompatButton btnLoginPassword;
     private AppCompatButton btnLoginBiometric;
-    private boolean noInfo = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        btnLoginBiometric.setEnabled(BiometricManager.isHardwareDetected());
         btnLoginPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         btnLoginBiometric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (noInfo) {
-                    BiometricHelper.configBiometric(MainActivity.this);
+                if (!BiometricManager.hasBiometricInfo()) {
+                    BiometricManager.addNewBiometricInfo();
                 } else {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
@@ -70,61 +65,10 @@ public class MainActivity extends AppCompatActivity {
                     intent.setClass(getBaseContext(), LoginActivity.class);
                     startActivity(intent);
                 }
-
             }
         });
 
-        BiometricHelper.verifyBiometric(this, new BiometricStateCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-            }
 
-            @Override
-            public void onNotSupport() {
-                super.onNotSupport();
-                btnLoginBiometric.setEnabled(false);
-            }
-
-            @Override
-            public void onNoInfo() {
-                super.onNoInfo();
-                noInfo = true;
-            }
-
-            @Override
-            public void onUnknown() {
-                super.onUnknown();
-            }
-        });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        BiometricHelper.verifyBiometric(this, new BiometricStateCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                noInfo = false;
-            }
-
-            @Override
-            public void onNotSupport() {
-                super.onNotSupport();
-                btnLoginBiometric.setEnabled(false);
-            }
-
-            @Override
-            public void onNoInfo() {
-                super.onNoInfo();
-                noInfo = true;
-            }
-
-            @Override
-            public void onUnknown() {
-                super.onUnknown();
-            }
-        });
-    }
 }

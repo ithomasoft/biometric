@@ -12,7 +12,8 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.FragmentActivity;
 
-public final class BiometricHelper {
+final class BiometricHelper {
+    static int failCount = 0;
 
     /**
      * 验证当前设备生物识别功能
@@ -20,7 +21,7 @@ public final class BiometricHelper {
      * @param context
      * @param callback
      */
-    public static void verifyBiometric(Context context, BiometricStateCallback callback) {
+    static void verifyBiometric(Context context, BiometricStateCallback callback) {
         int result = BiometricManager.from(context)
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
 
@@ -47,11 +48,11 @@ public final class BiometricHelper {
 
 
     /**
-     * 设置指纹，在调用之前先进行设备硬件支持的判断
+     * 添加指纹，在调用之前先进行设备硬件支持的判断
      *
      * @param context
      */
-    public static void configBiometric(Context context) {
+    static void addBiometric(Context context) {
         //没有录入指纹，打开相应的录入指纹页面
         String pcgName;
         String clsName;
@@ -70,6 +71,7 @@ public final class BiometricHelper {
             Intent intent = new Intent();
             ComponentName componentName = new ComponentName(pcgName, clsName);
             intent.setAction(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setComponent(componentName);
             context.startActivity(intent);
         }
@@ -83,7 +85,8 @@ public final class BiometricHelper {
      * @param other
      * @param callback
      */
-    public static void startBiometric(FragmentActivity context, String title, String other, BiometricIdentifyCallback callback) {
+    static void startBiometric(FragmentActivity context, String title, String other, BiometricIdentifyCallback callback) {
+        failCount = 0;
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle(title)
                 .setNegativeButtonText(other)
@@ -97,9 +100,19 @@ public final class BiometricHelper {
                 if (callback != null) {
                     switch (errorCode) {
                         case BiometricPrompt.ERROR_NO_BIOMETRICS:
+                        case BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL:
                             callback.onNoBiometric();
                             break;
                         case BiometricPrompt.ERROR_NEGATIVE_BUTTON:
+                        case BiometricPrompt.ERROR_LOCKOUT:
+                        case BiometricPrompt.ERROR_LOCKOUT_PERMANENT:
+                        case BiometricPrompt.ERROR_NO_SPACE:
+                        case BiometricPrompt.ERROR_SECURITY_UPDATE_REQUIRED:
+                        case BiometricPrompt.ERROR_TIMEOUT:
+                        case BiometricPrompt.ERROR_UNABLE_TO_PROCESS:
+                        case BiometricPrompt.ERROR_VENDOR:
+                        case BiometricPrompt.ERROR_HW_UNAVAILABLE:
+                        case BiometricPrompt.ERROR_HW_NOT_PRESENT:
                             callback.onOther();
                             break;
                         case BiometricPrompt.ERROR_USER_CANCELED:
@@ -126,8 +139,9 @@ public final class BiometricHelper {
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
                 Log.e("BiometricHelper", "onAuthenticationFailed");
-                if (callback != null) {
-                    callback.onFailed();
+                failCount++;
+                if (callback != null && failCount >= 3) {
+                    callback.onOther();
                 }
             }
         });
