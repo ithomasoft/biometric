@@ -59,7 +59,7 @@ final class BiometricLifecycle implements Application.ActivityLifecycleCallbacks
 
 
     private void verify(Activity activity) {
-        if (mActivityNameList.contains(activity.getClass().getSimpleName())) {
+        if (mActivityNameList.size() == 0 || mActivityNameList.contains(activity.getClass().getSimpleName())) {
             BiometricHelper.verifyBiometric(activity, new BiometricStateCallback() {
                 @Override
                 public void onSuccess() {
