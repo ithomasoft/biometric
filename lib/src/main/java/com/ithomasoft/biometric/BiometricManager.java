@@ -40,6 +40,12 @@ public final class BiometricManager {
         BiometricLifecycle.INSTANCE.init(sApp);
     }
 
+    public static void registerActivityName(String... className) {
+        for (String name : className) {
+            BiometricLifecycle.mActivityNameList.add(name);
+        }
+    }
+
     /**
      * 硬件是否支持
      *
@@ -92,7 +98,7 @@ public final class BiometricManager {
      */
     public static void startBiometricIdentify(FragmentActivity context, BiometricIdentifyCallback callback) {
         if (hardwareDetected) {
-            BiometricHelper.startBiometric(context, "指纹验证", "使用密码登录", callback);
+            BiometricHelper.startBiometric(context, "指纹验证", "取消", callback);
         }
     }
 

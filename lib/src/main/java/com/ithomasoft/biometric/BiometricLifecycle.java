@@ -7,8 +7,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.LinkedList;
+
 final class BiometricLifecycle implements Application.ActivityLifecycleCallbacks {
     static final BiometricLifecycle INSTANCE = new BiometricLifecycle();
+    static final LinkedList<String> mActivityNameList = new LinkedList();
 
     void init(Application app) {
         app.registerActivityLifecycleCallbacks(this);
@@ -56,33 +59,35 @@ final class BiometricLifecycle implements Application.ActivityLifecycleCallbacks
 
 
     private void verify(Activity activity) {
-        BiometricHelper.verifyBiometric(activity, new BiometricStateCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                BiometricManager.setHardwareDetected(true);
-                BiometricManager.setBiometricInfo(true);
-            }
+        if (mActivityNameList.contains(activity.getClass().getSimpleName())) {
+            BiometricHelper.verifyBiometric(activity, new BiometricStateCallback() {
+                @Override
+                public void onSuccess() {
+                    super.onSuccess();
+                    BiometricManager.setHardwareDetected(true);
+                    BiometricManager.setBiometricInfo(true);
+                }
 
-            @Override
-            public void onNotSupport() {
-                super.onNotSupport();
-                BiometricManager.setHardwareDetected(false);
-            }
+                @Override
+                public void onNotSupport() {
+                    super.onNotSupport();
+                    BiometricManager.setHardwareDetected(false);
+                }
 
-            @Override
-            public void onNoInfo() {
-                super.onNoInfo();
-                BiometricManager.setHardwareDetected(true);
-                BiometricManager.setBiometricInfo(false);
-            }
+                @Override
+                public void onNoInfo() {
+                    super.onNoInfo();
+                    BiometricManager.setHardwareDetected(true);
+                    BiometricManager.setBiometricInfo(false);
+                }
 
-            @Override
-            public void onUnknown() {
-                super.onUnknown();
-                BiometricManager.setHardwareDetected(true);
-                BiometricManager.setBiometricInfo(false);
-            }
-        });
+                @Override
+                public void onUnknown() {
+                    super.onUnknown();
+                    BiometricManager.setHardwareDetected(true);
+                    BiometricManager.setBiometricInfo(false);
+                }
+            });
+        }
     }
 }

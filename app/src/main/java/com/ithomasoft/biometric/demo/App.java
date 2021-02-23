@@ -9,5 +9,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         BiometricManager.init(this);
+//        BiometricManager.registerActivityName("MainActivity");
     }
 }
