@@ -40,6 +40,10 @@ public final class BiometricManager {
         BiometricLifecycle.INSTANCE.init(sApp);
     }
 
+    /**
+     * 注册需要监听的页面，都不传的话，都监听
+     * @param className
+     */
     public static void registerActivityName(String... className) {
         for (String name : className) {
             BiometricLifecycle.mActivityNameList.add(name);
