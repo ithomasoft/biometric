@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="60dp"
+        android:text="Hello World!" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设置中心" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="无指纹登录" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login_biometric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="指纹登录" />
+</androidx.appcompat.widget.LinearLayoutCompat>
