@@ -129,7 +129,8 @@ final class BiometricHelper {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                Log.e("BiometricHelper", result.getCryptoObject().getCipher() + "");
+
+                Log.e("BiometricHelper", "onAuthenticationSucceeded");
                 if (callback != null) {
                     callback.onSucceeded(result);
                 }
